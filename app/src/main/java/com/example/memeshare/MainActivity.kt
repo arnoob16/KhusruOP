@@ -27,13 +27,14 @@ import org.json.JSONObject
 class MainActivity : AppCompatActivity() {
 
     var currentImageURL: String ?= null
+    var currImage: String ?= null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-
         loadMeme()
     }
+
     private fun loadMeme(){
         progressBar.visibility = View.VISIBLE
         val queue = Volley.newRequestQueue(this)
@@ -43,6 +44,7 @@ class MainActivity : AppCompatActivity() {
             Response.Listener{ response ->
                 //Log.d("success request", response.getString("url"))
                 val image = response.getString("url")
+                currImage = image
                 Glide.with(this).load(image).listener(object : RequestListener<Drawable>{
                     override fun onLoadFailed(
                         e: GlideException?,
@@ -76,7 +78,7 @@ class MainActivity : AppCompatActivity() {
     fun shareMeme(view: View) {
         val intent = Intent(Intent.ACTION_SEND)
         intent.type = "text/plain"
-        intent.putExtra(Intent.EXTRA_TEXT, "Hey, checkout this cool meme I got from Reddit $currentImageURL")
+        intent.putExtra(Intent.EXTRA_TEXT, "Hey, checkout this cool meme I got from Reddit $currImage")
         val chooser = Intent.createChooser(intent, "Share this meme using...")
         startActivity(chooser)
     }
